@@ -1,0 +1,23 @@
+# Packages
+.packages
+pubspec.lock
+
+# Flutter
+.build/
+flutter_artifacts/
+.test_report.json
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Test coverage
+coverage/
