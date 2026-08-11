@@ -11,7 +11,10 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.5.1
   dio: ^5.7.0
-  moe_flutter_core:`n      git:`n        url: https://github.com/mindofemanizer/MOE-Flutter-Core.git`n        ref: master
+  moe_flutter_core:
+    git:
+      url: https://github.com/mindofemanizer/MOE-Flutter-Core.git
+      ref: master
 
 dev_dependencies:
   flutter_test:
