@@ -12,9 +12,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   dio: ^5.7.0
   moe_flutter_core:
-    git:
-      url: https://github.com/mindofemanizer/MOE-Flutter-Core.git
-      ref: master
+    path: ../MOE-Flutter-Core
 
 dev_dependencies:
   flutter_test:
@@ -26,4 +24,3 @@ topics:
   - payment
   - gateway
   - transaction
-
