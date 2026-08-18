@@ -1,6 +1,6 @@
 # MOE-Flutter-Payment
 
-Payment gateway integration for MOE Flutter ecosystem — QRIS, virtual accounts, refunds.
+Payment gateway integration for MOE Flutter ecosystem â€” QRIS, virtual accounts, refunds.
 
 ## Installation
 
@@ -9,7 +9,7 @@ dependencies:
   moe_flutter_payment:
     git:
       url: https://github.com/mindofemanizer/MOE-Flutter-Payment.git
-      ref: master
+      ref: v1.0.0
 ```
 
 ## Usage
@@ -78,12 +78,12 @@ if (result is Ok) {
     switch (statusResult) {
       case Ok(:final transaction):
         if (transaction.isPaid) {
-          print('✅ Payment berhasil! Total: Rp ${Formatters.currency(transaction.amount)}');
+          print('âœ… Payment berhasil! Total: Rp ${Formatters.currency(transaction.amount)}');
         } else {
-          print('⚠️ Payment failed: ${transaction.status.displayName}');
+          print('âš ï¸ Payment failed: ${transaction.status.displayName}');
         }
       case Err(:final failure):
-        print('❌ Error: ${failure.message}');
+        print('âŒ Error: ${failure.message}');
     }
   } else if (redirectUrl != null) {
     // Redirect to payment page (credit card etc.)
@@ -173,7 +173,7 @@ final result = await ref.read(paymentRepositoryProvider).refundPayment(
 |--------|-------------|
 | `PaymentTransactionModel` | Full payment record with status lifecycle |
 | `PaymentProvider` | Midtrans/Xendit gateway support |
-| `PaymentStatus` | Pending→Waiting→Paid/Failed/Canc elled/Refunded states |
+| `PaymentStatus` | Pendingâ†’Waitingâ†’Paid/Failed/Canc elled/Refunded states |
 | `PaymentMethodChannel` | QRIS/Virtual Account/Bank Transfer/E-Wallet/Card |
 | `PaymentRepository` | Create checkout, generate QRIS, poll status, refund |
 | `PaymentsNotifier` | Auto-polling until completed, cancel payments |
@@ -181,10 +181,10 @@ final result = await ref.read(paymentRepositoryProvider).refundPayment(
 ## Payment Flow Example
 
 ```dart
-1. User adds items to cart → Checkout
+1. User adds items to cart â†’ Checkout
 2. Call createPayment(orderNumber, amount, qris)
 3. Display QR code to user
-4. User scans QR with banking app → Pays
+4. User scans QR with banking app â†’ Pays
 5. Poll payment status every 5 seconds
 6. When status == 'paid', show success screen
 7. Create order in Commerce package
