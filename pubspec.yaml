@@ -16,7 +16,7 @@ dependencies:
   moe_flutter_core:
     git:
       url: https://github.com/mindofemanizer/MOE-Flutter-Core.git
-      ref: master
+      ref: v1.0.0
 
 dev_dependencies:
   flutter_test:
