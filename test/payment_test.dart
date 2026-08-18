@@ -15,12 +15,12 @@ void main() {
   });
 
   group('PaymentStatus', () {
-    test('isCompleted returns true for paid/cancelled', () {
+    test('isCompleted returns true for terminal statuses', () {
       expect(PaymentStatus.paid.isCompleted, isTrue);
       expect(PaymentStatus.cancelled.isCompleted, isTrue);
       
       expect(PaymentStatus.pending.isCompleted, isFalse);
-      expect(PaymentStatus.failed.isCompleted, isFalse);
+      expect(PaymentStatus.failed.isCompleted, isTrue);
       expect(PaymentStatus.refunded.isCompleted, isTrue);
     });
 
@@ -48,7 +48,7 @@ void main() {
 
   group('PaymentTransactionModel', () {
     test('isPaid returns true when status is paid', () {
-      const transaction = PaymentTransactionModel(
+      final transaction = PaymentTransactionModel(
         id: 'p1',
         orderNumber: 'ORD-001',
         externalId: 'EXT-001',
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('isPaid returns false when pending', () {
-      const transaction = PaymentTransactionModel(
+      final transaction = PaymentTransactionModel(
         id: 'p1',
         orderNumber: 'ORD-001',
         externalId: 'EXT-001',

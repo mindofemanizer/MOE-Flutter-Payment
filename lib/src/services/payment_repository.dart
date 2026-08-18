@@ -1,17 +1,16 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:moe_flutter_core/moe_flutter_core.dart';
 import 'package:moe_flutter_payment/src/config/payment_config.dart';
 import 'package:moe_flutter_payment/src/models/payment_transaction_model.dart';
+import 'package:moe_flutter_payment/src/models/payment_provider.dart';
 import 'package:moe_flutter_payment/src/models/payment_status.dart';
 
 /// Repository for payment operations.
 class PaymentRepository {
   final Dio _dio;
-  final MoePaymentConfig _config;
 
-  PaymentRepository(this._dio, this._config);
+  PaymentRepository(this._dio, MoePaymentConfig _);
 
   // ── Payment Transactions ───────────────────────────────────
 
@@ -24,21 +23,21 @@ class PaymentRepository {
     Map<String, dynamic>? metadata,
   }) async {
     try {
-      final response = await _dio.post('/payments', data: {
-        'order_number': orderNumber,
-        'amount': amount,
-        'provider': provider.stringValue,
-        'method': method,
-        if (metadata != null) 'metadata': metadata,
-      });
+      final response = await _dio.post(
+        '/payments',
+        data: {
+          'order_number': orderNumber,
+          'amount': amount,
+          'provider': provider.stringValue,
+          'method': method,
+          if (metadata != null) 'metadata': metadata,
+        },
+      );
       return Ok(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
@@ -46,14 +45,13 @@ class PaymentRepository {
   Future<AppResult<PaymentTransactionModel>> getPayment(String id) async {
     try {
       final response = await _dio.get('/payments/$id');
-      return Ok(PaymentTransactionModel.fromJson(response.data as Map<String, dynamic>));
+      return Ok(
+        PaymentTransactionModel.fromJson(response.data as Map<String, dynamic>),
+      );
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
@@ -87,10 +85,7 @@ class PaymentRepository {
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
@@ -104,41 +99,38 @@ class PaymentRepository {
         'payload': payload,
         'signature': signature,
       };
-      final response = await _dio.post('/webhooks/validate', data: params);
+      await _dio.post('/webhooks/validate', data: params);
       return const Ok(true);
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
   /// Refund payment.
-  Future<AppResult<void>> refundPayment(String id, {
+  Future<AppResult<void>> refundPayment(
+    String id, {
     required double amount,
     required String reason,
   }) async {
     try {
-      await _dio.post('/payments/$id/refund', data: {
-        'amount': amount,
-        'reason': reason,
-      });
+      await _dio.post(
+        '/payments/$id/refund',
+        data: {'amount': amount, 'reason': reason},
+      );
       return const Ok(null);
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
   /// Check payment status via polling (for webhooks not available).
-  Future<AppResult<PaymentTransactionModel>> checkPaymentStatus(String id) async {
+  Future<AppResult<PaymentTransactionModel>> checkPaymentStatus(
+    String id,
+  ) async {
     return getPayment(id);
   }
 
@@ -148,18 +140,15 @@ class PaymentRepository {
     required double amount,
   }) async {
     try {
-      final response = await _dio.post('/payments/qris', data: {
-        'order_number': orderNumber,
-        'amount': amount,
-      });
+      final response = await _dio.post(
+        '/payments/qris',
+        data: {'order_number': orderNumber, 'amount': amount},
+      );
       return Ok(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 
@@ -170,19 +159,19 @@ class PaymentRepository {
     required double amount,
   }) async {
     try {
-      final response = await _dio.post('/payments/virtual-account', data: {
-        'order_number': orderNumber,
-        'alias_name': aliasName,
-        'amount': amount,
-      });
+      final response = await _dio.post(
+        '/payments/virtual-account',
+        data: {
+          'order_number': orderNumber,
+          'alias_name': aliasName,
+          'amount': amount,
+        },
+      );
       return Ok(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       return Err(mapDioErrorToFailure(e));
     } catch (e) {
-      return Err(AppFailure(
-        type: FailureType.unknown,
-        message: e.toString(),
-      ));
+      return Err(AppFailure(type: FailureType.unknown, message: e.toString()));
     }
   }
 }

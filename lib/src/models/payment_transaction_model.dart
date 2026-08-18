@@ -1,3 +1,9 @@
+import 'package:equatable/equatable.dart';
+
+import 'package:moe_flutter_core/moe_flutter_core.dart';
+import 'package:moe_flutter_payment/src/models/payment_provider.dart';
+import 'package:moe_flutter_payment/src/models/payment_status.dart';
+
 /// Model representing a payment transaction.
 class PaymentTransactionModel extends Equatable {
   final String id;
@@ -30,7 +36,7 @@ class PaymentTransactionModel extends Equatable {
     this.receiptUrl,
     required this.createdAt,
     required this.updatedAt,
-  }) : assert amount > 0;
+  }) : assert(amount > 0);
 
   factory PaymentTransactionModel.fromJson(Map<String, dynamic> json) {
     return PaymentTransactionModel(
@@ -80,6 +86,9 @@ class PaymentTransactionModel extends Equatable {
 
   /// Check if payment is successful.
   bool get isPaid => status == PaymentStatus.paid;
+
+  /// Whether the payment is still active.
+  bool get isActive => status.isActive;
 
   @override
   List<Object?> get props => [

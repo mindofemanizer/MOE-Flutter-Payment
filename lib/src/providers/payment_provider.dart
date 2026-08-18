@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:moe_flutter_core/moe_flutter_core.dart';
-import 'package:moe_flutter_payment/src/config/payment_config.dart';
 import 'package:moe_flutter_payment/src/models/payment_transaction_model.dart';
+import 'package:moe_flutter_payment/src/models/payment_provider.dart';
 import 'package:moe_flutter_payment/src/models/payment_status.dart';
 import 'package:moe_flutter_payment/src/services/payment_repository.dart';
 
@@ -11,9 +11,13 @@ sealed class PaymentState {
   const PaymentState();
 }
 
-final class PaymentInitial extends PaymentState {}
+final class PaymentInitial extends PaymentState {
+  const PaymentInitial();
+}
 
-final class PaymentLoading extends PaymentState {}
+final class PaymentLoading extends PaymentState {
+  const PaymentLoading();
+}
 
 final class PaymentLoaded extends PaymentState {
   final PaymentTransactionModel transaction;
@@ -50,8 +54,7 @@ class PaymentsNotifier extends StateNotifier<PaymentState> {
     );
 
     switch (result) {
-      case Ok(:final data):
-        // Store checkout URL/QRCIS in data map
+      case Ok():
         return result;
       case Err(:final failure):
         state = PaymentError(failure);
@@ -60,38 +63,39 @@ class PaymentsNotifier extends StateNotifier<PaymentState> {
   }
 
   /// Poll payment status until completed.
-  Future<AppResult<PaymentTransactionModel>> pollPaymentStatus(String id) async {
+  Future<AppResult<PaymentTransactionModel>> pollPaymentStatus(
+    String id,
+  ) async {
     var attempts = 0;
     const maxAttempts = 60; // 5 minutes with 5s interval
 
     while (attempts < maxAttempts) {
-      await Future.delayed(Duration(seconds: 5));
-      
+      await Future.delayed(const Duration(seconds: 5));
+
       final result = await _repository.getPayment(id);
 
-      if (result is Ok) {
-        final transaction = result.data;
-        
-        if (transaction.isCompleted) {
-          state = PaymentLoaded(transaction);
-          return result;
-        }
+      switch (result) {
+        case Ok(:final data):
+          if (data.isCompleted) {
+            state = PaymentLoaded(data);
+            return result;
+          }
 
-        // Continue polling
-        attempts++;
-      } else if (result is Err) {
-        state = PaymentError(result.failure);
-        return result;
+          // Continue polling
+          attempts++;
+        case Err(:final failure):
+          state = PaymentError(failure);
+          return result;
       }
     }
 
     // Timeout
-    final timeoutFailure = AppFailure(
+    const timeoutFailure = AppFailure(
       type: FailureType.unknown,
       message: 'Payment timeout after ${maxAttempts * 5}s',
     );
-    state = PaymentError(timeoutFailure);
-    return Err(timeoutFailure);
+    state = const PaymentError(timeoutFailure);
+    return const Err(timeoutFailure);
   }
 
   /// Check single payment status.
@@ -100,10 +104,11 @@ class PaymentsNotifier extends StateNotifier<PaymentState> {
 
     final result = await _repository.checkPaymentStatus(id);
 
-    if (result is Ok) {
-      state = PaymentLoaded(result.data);
-    } else {
-      state = PaymentError(result.failure);
+    switch (result) {
+      case Ok(:final data):
+        state = PaymentLoaded(data);
+      case Err(:final failure):
+        state = PaymentError(failure);
     }
 
     return result;
@@ -146,6 +151,6 @@ final paymentRepositoryProvider = Provider<PaymentRepository>((ref) {
 });
 
 /// Provider for PaymentsNotifier.
-final paymentsProvider = StateNotifierProviderFactory<PaymentsNotifier>(
+final paymentsProvider = StateNotifierProvider<PaymentsNotifier, PaymentState>(
   (ref) => PaymentsNotifier(ref.watch(paymentRepositoryProvider)),
 );

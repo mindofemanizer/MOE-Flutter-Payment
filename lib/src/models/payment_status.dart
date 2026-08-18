@@ -18,8 +18,8 @@ enum PaymentStatus {
     );
   }
 
-  bool get isCompleted => this == paid || this == cancelled;
-  bool get isActive => !isCompleted && this != refunded;
+  bool get isCompleted => this == paid || this == failed || this == refunded || this == cancelled;
+  bool get isActive => !isCompleted;
 }
 
 /// Payment method channel.
