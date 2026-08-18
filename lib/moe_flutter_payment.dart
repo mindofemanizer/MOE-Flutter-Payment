@@ -1,4 +1,5 @@
 /// Barrel file — public API for moe_flutter_payment.
+library;
 export 'package:moe_flutter_core/src/models/currency_code.dart';
 export 'src/config/payment_config.dart';
 export 'src/models/payment_provider.dart';

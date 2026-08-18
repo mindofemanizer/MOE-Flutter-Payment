@@ -1,7 +1,7 @@
 /// Payment status lifecycle.
 enum PaymentStatus {
   pending('pending', 'Menunggu Pembayaran'),
-  waiting_payment('waiting_payment', 'Menunggu Pembayaran User'),
+  waitingPayment('waiting_payment', 'Menunggu Pembayaran User'),
   paid('paid', 'Lunas'),
   failed('failed', 'Gagal'),
   refunded('refunded', 'Direfund'),

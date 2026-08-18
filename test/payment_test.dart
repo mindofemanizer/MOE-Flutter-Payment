@@ -109,7 +109,7 @@ void main() {
       expect(payment.method, equals('qris'));
       expect(payment.amount, equals(75000));
       expect(payment.currency, equals(CurrencyCode.IDR));
-      expect(payment.status, equals(PaymentStatus.waiting_payment));
+      expect(payment.status, equals(PaymentStatus.waitingPayment));
       expect(payment.paidAt, isNull);
       expect(payment.notes, equals('Pembayaran QRIS'));
       expect(payment.isCompleted, isFalse);

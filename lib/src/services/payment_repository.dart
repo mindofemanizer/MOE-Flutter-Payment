@@ -30,7 +30,7 @@ class PaymentRepository {
           'amount': amount,
           'provider': provider.stringValue,
           'method': method,
-          if (metadata != null) 'metadata': metadata,
+          'metadata': ?metadata,
         },
       );
       return Ok(response.data as Map<String, dynamic>);
@@ -69,11 +69,11 @@ class PaymentRepository {
       final params = <String, dynamic>{
         'page': page,
         'limit': limit,
-        if (orderNumber != null) 'order_number': orderNumber,
+        'order_number': ?orderNumber,
         if (startDate != null) 'start_date': startDate.toIso8601String(),
         if (endDate != null) 'end_date': endDate.toIso8601String(),
         if (status != null) 'status': status.value,
-        if (method != null) 'method': method,
+        'method': ?method,
       };
       final response = await _dio.get('/payments', queryParameters: params);
       final data = response.data as Map<String, dynamic>;
